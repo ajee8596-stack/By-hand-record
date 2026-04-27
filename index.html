@@ -3,137 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REALME | Official Records</title>
+    <title>REALME | Enterprise System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
-        :root { --realme-yellow: #ffc800; --realme-black: #000000; --bg: #f8f9fa; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; overflow-x: hidden; }
-
-        /* Overlays & Modals Visibility Fix */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-card { background: #ffffff; padding: 40px; border-radius: 25px; text-align: center; border: 3px solid var(--realme-yellow); width: 90%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .r-logo-big { background: var(--realme-black); color: var(--realme-yellow); display: inline-block; padding: 12px 25px; font-weight: 900; font-size: 30px; border-radius: 10px; margin-bottom: 25px; }
         
-        .modal-card h2 { color: #000; margin-bottom: 25px; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; font-weight: 900; }
-        
-        /* Modal Input Fix: Dark text on Light background */
-        .modal-card input { 
-            background: #f0f0f0; border: 2px solid #ccc; 
-            color: #000 !important; /* Force Black Text */
-            padding: 15px; width: 100%; border-radius: 12px; margin-bottom: 20px; 
-            text-align: center; box-sizing: border-box; font-size: 16px; font-weight: bold;
+        :root {
+            --realme-yellow: #ffc800;
+            --realme-black: #111111;
+            --input-bg: #1a1a1a;
+            --text-grey: #666666;
+            --error: #ff4d4f;
         }
-        .modal-card input::placeholder { color: #888; font-weight: normal; }
-        .modal-card button { background: var(--realme-black); color: var(--realme-yellow); border: none; padding: 16px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* Header */
-        header { background: var(--realme-black); padding: 20px; display: flex; flex-direction: column; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--realme-yellow); }
-        .logo-box { background: var(--realme-yellow); color: black; font-weight: 900; padding: 6px 18px; border-radius: 6px; font-size: 24px; margin-bottom: 5px; }
-        header h1 { color: white; margin: 0; font-size: 11px; letter-spacing: 5px; text-transform: uppercase; opacity: 0.8; }
-        #userDisplay { position: absolute; right: 20px; bottom: 12px; color: var(--realme-yellow); font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; background: #f8f9fa; color: #333; overflow-x: hidden; }
 
-        /* Dashboard Card */
-        .dashboard { max-width: 500px; margin: 40px auto; padding: 0 20px; }
-        .card { background: white; border-radius: 30px; padding: 35px; box-shadow: 0 20px 50px rgba(0,0,0,0.05); }
-        .card-title { font-weight: 900; font-size: 18px; margin-bottom: 30px; text-align: center; text-transform: uppercase; border-bottom: 2px solid #f8f8f8; padding-bottom: 15px; }
+        /* --- AUTHENTICATION SCREEN --- */
+        #authGate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; align-items: center; justify-content: center; z-index: 10000;
+        }
+        .auth-card {
+            background: var(--realme-black); padding: 50px 40px; border-radius: 50px;
+            border: 2px solid var(--realme-yellow); text-align: center;
+            width: 90%; max-width: 440px; box-shadow: 0 0 40px rgba(255, 200, 0, 0.1);
+        }
+        .realme-logo-box {
+            background: var(--realme-yellow); color: black; display: inline-block;
+            padding: 10px 30px; border-radius: 12px; font-weight: 900; font-size: 26px; margin-bottom: 35px;
+        }
+        .auth-card h1 { color: #fff; font-weight: 700; font-size: 28px; margin: 0; letter-spacing: 1px; }
+        .auth-card p { color: var(--text-grey); font-size: 11px; margin-top: 10px; margin-bottom: 30px; letter-spacing: 2px; font-weight: 700; }
+
+        .field-box { position: relative; width: 100%; margin-bottom: 18px; }
+        .field-box input {
+            width: 100%; padding: 20px; border-radius: 18px; border: 1px solid #333;
+            background: var(--input-bg); color: #fff; text-align: center; font-size: 16px; outline: none;
+        }
+        .field-box input:focus { border-color: var(--realme-yellow); }
+        .field-box i { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--text-grey); cursor: pointer; }
+
+        .primary-btn {
+            width: 100%; padding: 20px; border-radius: 20px; border: none;
+            background: var(--realme-yellow); color: #000; font-weight: 900;
+            cursor: pointer; text-transform: uppercase; font-size: 15px; margin-top: 15px;
+        }
+        .primary-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .recover-link { color: var(--text-grey); font-size: 12px; display: block; margin-top: 20px; cursor: pointer; text-decoration: underline; }
+
+        /* --- DASHBOARD & TABLE --- */
+        header { background: #000; padding: 25px; display: flex; justify-content: center; align-items: center; border-bottom: 4px solid var(--realme-yellow); position: relative; }
+        .header-logo { background: var(--realme-yellow); color: #000; font-weight: 900; padding: 6px 18px; border-radius: 6px; font-size: 24px; }
+        .nav-icons { position: absolute; right: 30px; display: flex; gap: 20px; color: white; cursor: pointer; font-size: 20px; }
+
+        .container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        .main-card { background: #fff; padding: 40px; border-radius: 35px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 10px; font-weight: 900; color: #bbb; margin-bottom: 8px; text-transform: uppercase; }
-        input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #f0f0f0; box-sizing: border-box; font-size: 14px; color: #000; }
-        input:focus { border-color: var(--realme-yellow); background: #fffdf5; outline: none; }
-        
-        .btn-main { width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .save-btn { background: var(--realme-black); color: var(--realme-yellow); }
-        .history-btn { background: #f0f0f0; color: #666; margin-top: 15px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 900; color: #aaa; text-transform: uppercase; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid #f0f0f0; background: #fafafa; font-weight: 600; outline: none; }
+        .form-group input:focus { border-color: var(--realme-yellow); }
 
-        /* Data Table Alignment Fix */
-        #historySection { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 200; overflow-y: auto; padding: 25px; box-sizing: border-box; }
-        .table-container { background: white; border-radius: 20px; padding: 15px; overflow-x: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; min-width: 1050px; table-layout: fixed; }
-        th { text-align: left; padding: 15px 12px; color: #aaa; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #f5f5f5; }
-        td { padding: 18px 12px; font-size: 13px; color: #333; border-bottom: 1px solid #f9f9f9; word-wrap: break-word; }
-        .img-preview { width: 55px; height: 55px; object-fit: cover; border-radius: 10px; border: 2px solid var(--realme-yellow); }
-        .badge-creator { background: #fff9e6; color: #d4a017; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 10px; border: 1px solid #ffeeba; }
+        #historySection { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 5000; padding: 40px; overflow-y: auto; }
+        .table-card { background: #fff; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); overflow: hidden; margin-top: 30px; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th { text-align: left; padding: 15px; font-size: 11px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
+        td { padding: 20px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #f8f8f8; vertical-align: middle; }
+        tr:hover td { background: #fafafa; }
         
-        footer { text-align: center; padding: 40px; color: #ccc; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .row-img { width: 65px; height: 65px; object-fit: cover; border-radius: 12px; border: 2px solid var(--realme-yellow); box-shadow: 0 4px 10px rgba(255,200,0,0.2); }
+        .creator-tag { font-weight: 900; color: #000; }
+        .del-btn { color: var(--error); cursor: pointer; font-size: 18px; }
+
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 16px 35px; border-radius: 50px; border: 2px solid var(--realme-yellow); font-weight: 700; font-size: 12px; z-index: 11000; text-transform: uppercase; }
+        #toast.active { bottom: 40px; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 6000; backdrop-filter: blur(8px); }
+        .realme-modal { background: #fff; padding: 40px; border-radius: 30px; text-align: center; width: 90%; max-width: 400px; }
     </style>
 </head>
 <body>
 
-<div id="loginOverlay" class="overlay">
-    <div class="modal-card">
-        <div class="r-logo-big">r</div>
-        <h2>Staff Access</h2>
-        <input type="text" id="userNameInput" placeholder="Write Your Name">
-        <button onclick="handleLogin()">Enter Dashboard</button>
+<div id="toast">Operation Successful</div>
+
+<div id="authGate">
+    <div class="auth-card">
+        <div class="realme-logo-box">realme</div>
+        <h1 id="gateTitle">Register System</h1>
+        <p id="gateDesc">AUTHORIZED PERSONNEL ONLY</p>
+
+        <div class="field-box">
+            <input type="text" id="gName" placeholder="Full Name">
+        </div>
+        <div class="field-box" id="passContainer">
+            <input type="password" id="gPass" placeholder="Access Password">
+            <i class="fas fa-eye" onclick="toggleEye('gPass', this)"></i>
+        </div>
+        <div class="field-box" id="confirmContainer" style="display:none;">
+            <input type="password" id="gConf" placeholder="Confirm Password">
+            <i class="fas fa-eye" onclick="toggleEye('gConf', this)"></i>
+        </div>
+        <div class="field-box" id="recoveryContainer" style="display:none;">
+            <input type="tel" id="gPhone" placeholder="Recovery Phone (03xxxxxxxxx)">
+        </div>
+
+        <button onclick="authLogic()" class="primary-btn" id="gateBtn">Initialize Profile</button>
+        <span class="recover-link" onclick="triggerRecovery()" id="forgotBtn">Forgot Password?</span>
+        <p id="gError" style="color:var(--error); font-size:11px; margin-top:20px; font-weight:900;"></p>
     </div>
 </div>
 
-<div id="deleteOverlay" class="overlay" style="display: none;">
-    <div class="modal-card">
-        <div class="r-logo-big" style="background: #ff4d4f; color: white;">!</div>
-        <h2>Security Check</h2>
-        <input type="text" id="deleteCodeInput" placeholder="Type Security Code">
-        <div style="display: flex; gap: 10px;">
-            <button onclick="closeDeleteModal()" style="background:#333; color:white;">Cancel</button>
-            <button onclick="confirmDeletion()" style="background:#ff4d4f; color:white;">Confirm</button>
+<div id="deleteModal" class="modal-overlay">
+    <div class="realme-modal">
+        <h2 style="font-weight:900;">SECURITY KEY</h2>
+        <p style="color:#777; font-size:13px;">Enter master key to delete record.</p>
+        <input type="text" id="masterKey" placeholder="Key: Realme" style="width:100%; padding:15px; border-radius:12px; border:2px solid #eee; text-align:center; margin-bottom:20px; outline:none;">
+        <div style="display:flex; gap:12px;">
+            <button onclick="closeModal('deleteModal')" style="flex:1; padding:15px; border-radius:12px; border:none; background:#eee; font-weight:700;">CANCEL</button>
+            <button onclick="executeDelete()" style="flex:1; padding:15px; border-radius:12px; border:none; background:var(--error); color:white; font-weight:700;">PURGE</button>
         </div>
     </div>
 </div>
 
-<header>
-    <div class="logo-box">realme</div>
-    <h1>By Hand Order Records</h1>
-    <div id="userDisplay"></div>
-</header>
-
-<div class="dashboard">
-    <div class="card">
-        <div class="card-title">Entry Form</div>
-        <div class="form-group"><label>Order Code</label><input type="text" id="orderNo" placeholder="Enter"></div>
-        <div class="form-group"><label>Customer Name</label><input type="text" id="custName" placeholder="Full Name"></div>
-        <div class="form-group"><label>ID Card Number (CNIC)</label><input type="text" id="idCard" placeholder="XXXXX-XXXXXXX-X" maxlength="15"></div>
-        <div class="form-group"><label>Phone Number</label><input type="tel" id="phoneNo" placeholder="03xx-xxxxxxx"></div>
-        <div style="display: flex; gap: 15px;">
-            <div class="form-group" style="flex: 1;"><label>Order Date</label><input type="date" id="orderDate"></div>
-            <div class="form-group" style="flex: 1;"><label>Pieces</label><input type="number" id="pieceCount" value="1"></div>
+<div id="mainSystem" style="display:none;">
+    <header>
+        <div class="header-logo">realme</div>
+        <div class="nav-icons">
+            <i class="fas fa-sign-out-alt" onclick="location.reload()"></i>
         </div>
-        <div class="form-group"><label>Record Image</label><input type="file" id="orderImg" accept="image/*"></div>
-        <button id="saveBtn" class="btn-main save-btn">Save Record</button>
-        <button id="viewHistoryBtn" class="btn-main history-btn">Database View</button>
-        <p id="status" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
+    </header>
+
+    <div class="container">
+        <div class="main-card">
+            <div class="form-group"><label>Order Code</label><input type="text" id="fCode" placeholder="Enter Code"></div>
+            <div class="form-group"><label>Customer Name</label><input type="text" id="fName" placeholder="Enter Name"></div>
+            <div class="form-group"><label>ID Card (CNIC)</label><input type="text" id="fID" placeholder="XXXXX-XXXXXXX-X" maxlength="15"></div>
+            <div class="form-group"><label>Phone Number</label><input type="tel" id="fPhone" placeholder="03XX-XXXXXXX"></div>
+            <div style="display:flex; gap:15px;">
+                <div class="form-group" style="flex:2;"><label>Date</label><input type="date" id="fDate"></div>
+                <div class="form-group" style="flex:1;"><label>Qty</label><input type="number" id="fQty" value="1"></div>
+            </div>
+            <div class="form-group"><label>Attachment Image</label><input type="file" id="fImg" accept="image/*" style="padding:10px;"></div>
+            <button id="saveBtn" class="primary-btn" style="background:var(--realme-black); color:var(--realme-yellow);">Secure Record</button>
+            <button onclick="openDatabase()" class="primary-btn" style="background:#f0f0f0; color:#555; margin-top:15px;">View Database</button>
+        </div>
     </div>
-</div>
 
-<div id="historySection">
-    <div style="max-width: 1250px; margin: auto;">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h2 style="font-weight:900;">REALME <span style="color: var(--realme-yellow);">DATABASE</span></h2>
-            <button onclick="closeHistory()" style="background:black; color:white; border:none; padding:12px 25px; border-radius:12px; cursor:pointer; font-weight:bold;">EXIT VIEW</button>
+    <div id="historySection">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 style="font-weight:900; font-size:24px;">OFFICIAL <span style="color:var(--realme-yellow);">DATABASE</span></h2>
+            <button onclick="closeDatabase()" style="background:#000; color:#fff; border:none; padding:12px 30px; border-radius:12px; font-weight:900; cursor:pointer;">CLOSE</button>
         </div>
-        <div class="table-container">
+        <div class="table-card">
             <table>
                 <thead>
-                    <tr>
-                        <th style="width: 120px;">Order Code</th>
-                        <th style="width: 180px;">Customer</th>
-                        <th style="width: 160px;">ID Card</th>
-                        <th style="width: 130px;">Phone</th>
-                        <th style="width: 120px;">Date</th>
-                        <th style="width: 70px;">Qty</th>
-                        <th style="width: 100px;">Image</th>
-                        <th style="width: 130px;">Creator</th>
-                        <th style="width: 80px; text-align:center;">Action</th>
-                    </tr>
+                    <tr><th>Code</th><th>Customer</th><th>ID Card</th><th>Phone</th><th>Date</th><th>Qty</th><th>Image</th><th>Creator</th><th>Action</th></tr>
                 </thead>
-                <tbody id="tableBody"></tbody>
+                <tbody id="dbRows"></tbody>
             </table>
         </div>
     </div>
 </div>
-
-<footer>OFFICIAL REALME PARTNER SYSTEM | AJ STUDIO &copy; 2026</footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
@@ -151,90 +181,138 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // --- ID Card Formatting (13 digits + 2 dashes) ---
-    document.getElementById('idCard').addEventListener('input', function (e) {
-        let val = e.target.value.replace(/\D/g, ''); 
-        let res = "";
-        if (val.length > 0) res += val.substring(0, 5);
-        if (val.length > 5) res += '-' + val.substring(5, 12);
-        if (val.length > 12) res += '-' + val.substring(12, 13);
-        e.target.value = res;
-    });
-
-    // --- Login System ---
-    window.handleLogin = () => {
-        const name = document.getElementById('userNameInput').value.trim();
-        if(!name) { alert("Please enter your name!"); return; }
-        localStorage.setItem("active_creator", name);
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('userDisplay').innerText = "Logged in: " + name;
-    };
-    if(localStorage.getItem("active_creator")) {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('userDisplay').innerText = "Logged in: " + localStorage.getItem("active_creator");
+    // --- AUTH LOGIC ---
+    const isReg = localStorage.getItem("rm_user");
+    if(isReg) {
+        document.getElementById('gateTitle').innerText = "System Access";
+        document.getElementById('gateBtn').innerText = "Login System";
+    } else {
+        document.getElementById('confirmContainer').style.display = "block";
+        document.getElementById('recoveryContainer').style.display = "block";
+        document.getElementById('forgotBtn').style.display = "none";
     }
 
-    // --- Delete Security ---
+    window.toggleEye = (id, btn) => {
+        const input = document.getElementById(id);
+        const isPass = input.type === "password";
+        input.type = isPass ? "text" : "password";
+        btn.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+    };
+
+    let resetMode = false;
+    window.triggerRecovery = () => {
+        resetMode = true;
+        document.getElementById('gateTitle').innerText = "Reset Password";
+        document.getElementById('passContainer').style.display = "none";
+        document.getElementById('recoveryContainer').style.display = "block";
+        document.getElementById('gateBtn').innerText = "Verify Recovery";
+    };
+
+    window.authLogic = () => {
+        const u = document.getElementById('gName').value.trim();
+        const p = document.getElementById('gPass').value;
+        const c = document.getElementById('gConf').value;
+        const ph = document.getElementById('gPhone').value.trim();
+        const err = document.getElementById('gError');
+
+        if(!isReg) {
+            if(!u || !p || !ph) { err.innerText = "ALL FIELDS REQUIRED"; return; }
+            if(p !== c) { err.innerText = "PASSWORDS MISMATCH"; return; }
+            localStorage.setItem("rm_user", u);
+            localStorage.setItem("rm_pass", p);
+            localStorage.setItem("rm_phone", ph);
+            location.reload();
+        } else if(resetMode) {
+            if(ph === localStorage.getItem("rm_phone")) {
+                const n = prompt("New Password:");
+                if(n) { localStorage.setItem("rm_pass", n); location.reload(); }
+            } else { err.innerText = "WRONG RECOVERY PHONE"; }
+        } else {
+            if(u === localStorage.getItem("rm_user") && p === localStorage.getItem("rm_pass")) {
+                document.getElementById('authGate').style.display = "none";
+                document.getElementById('mainSystem').style.display = "block";
+            } else { err.innerText = "INVALID CREDENTIALS"; }
+        }
+    };
+
+    // --- FORMATTING LOGIC ---
+    // CNIC Formatting
+    document.getElementById('fID').addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, ''); let out = "";
+        if (v.length > 0) out += v.substring(0, 5);
+        if (v.length > 5) out += '-' + v.substring(5, 12);
+        if (v.length > 12) out += '-' + v.substring(12, 13);
+        e.target.value = out;
+    });
+
+    // Phone Formatting (03xx-xxxxxxx)
+    document.getElementById('fPhone').addEventListener('input', (e) => {
+        let v = e.target.value.replace(/\D/g, ''); let out = "";
+        if (v.length > 0) out += v.substring(0, 4);
+        if (v.length > 4) out += '-' + v.substring(4, 11);
+        e.target.value = out;
+    });
+
+    // --- MAIN OPERATIONS ---
+    const msg = (text) => {
+        const t = document.getElementById('toast'); t.innerText = text;
+        t.classList.add('active'); setTimeout(() => t.classList.remove('active'), 3000);
+    };
+
+    window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+    window.openDatabase = () => document.getElementById('historySection').style.display = 'block';
+    window.closeDatabase = () => document.getElementById('historySection').style.display = 'none';
+
     let targetID = null;
-    window.delRec = (id) => { targetID = id; document.getElementById('deleteOverlay').style.display = 'flex'; };
-    window.closeDeleteModal = () => { 
-        document.getElementById('deleteOverlay').style.display = 'none'; 
-        document.getElementById('deleteCodeInput').value = ""; 
-    };
-    window.confirmDeletion = async () => {
-        const code = document.getElementById('deleteCodeInput').value;
-        if(code === "Realme") {
+    window.delReq = (id) => { targetID = id; document.getElementById('deleteModal').style.display = 'flex'; };
+    window.executeDelete = async () => {
+        if(document.getElementById('masterKey').value === "Realme") {
             await deleteDoc(doc(db, "ByHandOrders", targetID));
-            closeDeleteModal();
-        } else { alert("Wrong Password!"); }
+            closeModal('deleteModal'); msg("Record Purged");
+            document.getElementById('masterKey').value = "";
+        } else { msg("Invalid Key"); }
     };
 
-    document.getElementById('orderDate').value = new Date().toISOString().split('T')[0];
-    document.getElementById('viewHistoryBtn').onclick = () => document.getElementById('historySection').style.display = 'block';
-    window.closeHistory = () => document.getElementById('historySection').style.display = 'none';
+    document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
 
-    // --- Save Record ---
     document.getElementById('saveBtn').onclick = async () => {
-        const oNo = document.getElementById('orderNo').value;
-        const cName = document.getElementById('custName').value;
-        const imgFile = document.getElementById('orderImg').files[0];
-        
-        if(!oNo || !cName || !imgFile) { alert("Please fill Order Code, Customer and Image!"); return; }
+        const code = document.getElementById('fCode').value;
+        const name = document.getElementById('fName').value;
+        const img = document.getElementById('fImg').files[0];
+        if(!code || !name || !img) { msg("Incomplete Data"); return; }
 
-        document.getElementById('status').innerHTML = "Processing Record... ⌛";
+        msg("Syncing with Server...");
         try {
-            const formData = new FormData(); formData.append("image", imgFile);
-            const res = await fetch("https://api.imgbb.com/1/upload?key=30a17df9f6d3fbbc3e994f6f5a72ee77", { method: "POST", body: formData });
+            const fd = new FormData(); fd.append("image", img);
+            const res = await fetch("https://api.imgbb.com/1/upload?key=30a17df9f6d3fbbc3e994f6f5a72ee77", { method: "POST", body: fd });
             const data = await res.json();
-            
+
             await addDoc(collection(db, "ByHandOrders"), {
-                orderNo: oNo, customerName: cName, idCard: document.getElementById('idCard').value, 
-                phone: document.getElementById('phoneNo').value, orderDate: document.getElementById('orderDate').value,
-                pieceCount: Number(document.getElementById('pieceCount').value), imageUrl: data.data.url,
-                creator: localStorage.getItem("active_creator"), timestamp: serverTimestamp()
+                orderNo: code, customerName: name, idCard: document.getElementById('fID').value,
+                phone: document.getElementById('fPhone').value, orderDate: document.getElementById('fDate').value,
+                pieceCount: Number(document.getElementById('fQty').value), imageUrl: data.data.url,
+                creator: localStorage.getItem("rm_user"), timestamp: serverTimestamp()
             });
-            
-            document.getElementById('status').innerText = "Record Saved Successfully! ✅";
-            document.getElementById('orderNo').value = ""; document.getElementById('custName').value = "";
-            document.getElementById('idCard').value = ""; document.getElementById('phoneNo').value = "";
-        } catch(e) { document.getElementById('status').innerText = "Error Saving Data! ❌"; }
+            msg("Record Secured Successfully");
+            document.getElementById('fCode').value = ""; document.getElementById('fName').value = "";
+            document.getElementById('fID').value = ""; document.getElementById('fPhone').value = "";
+        } catch(e) { msg("Sync Failed"); }
     };
 
-    // --- Database Stream ---
     onSnapshot(query(collection(db, "ByHandOrders"), orderBy("timestamp", "desc")), (snap) => {
-        const body = document.getElementById('tableBody'); body.innerHTML = "";
+        const tb = document.getElementById('dbRows'); tb.innerHTML = "";
         snap.forEach((d) => {
-            const row = d.data();
-            body.innerHTML += `<tr>
-                <td style="font-weight:900; color:black;">${row.orderNo}</td>
-                <td style="font-weight:700;">${row.customerName}</td>
-                <td style="font-family:monospace;">${row.idCard || '-'}</td>
-                <td>${row.phone || '-'}</td>
-                <td>${row.orderDate}</td>
-                <td style="text-align:center;">${row.pieceCount}</td>
-                <td><a href="${row.imageUrl}" target="_blank"><img class="img-preview" src="${row.imageUrl}"></a></td>
-                <td><span class="badge-creator">${row.creator || 'Admin'}</span></td>
-                <td style="text-align:center;"><i class="fas fa-trash-alt" style="color:#ff4d4f; cursor:pointer; font-size:16px;" onclick="window.delRec('${d.id}')"></i></td>
+            const r = d.data();
+            tb.innerHTML += `<tr>
+                <td style="font-weight:900; letter-spacing:0.5px;">${r.orderNo}</td>
+                <td>${r.customerName}</td>
+                <td style="font-family:monospace;">${r.idCard}</td>
+                <td>${r.phone}</td>
+                <td>${r.orderDate}</td>
+                <td>${r.pieceCount}</td>
+                <td><a href="${r.imageUrl}" target="_blank"><img class="row-img" src="${r.imageUrl}"></a></td>
+                <td class="creator-tag">${r.creator}</td>
+                <td><i class="fas fa-trash-alt del-btn" onclick="window.delReq('${d.id}')"></i></td>
             </tr>`;
         });
     });
