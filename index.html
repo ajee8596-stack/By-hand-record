@@ -3,163 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AJ Studio | By Hand Orders Records</title>
+    <title>REALME | Order Management</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
         :root {
-            --primary: #1e3a8a; 
-            --accent: #10b981;  
-            --bg: #f3f4f6;
-            --white: #ffffff;
-            --text: #1f2937;
-            --danger: #ef4444;
+            --realme-yellow: #ffc800;
+            --realme-black: #000000;
+            --realme-gray: #1a1a1a;
+            --bg: #f8f9fa;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
 
         header {
-            background: var(--primary);
-            color: white;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: var(--realme-black);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        header h1 { margin: 0; font-size: 22px; letter-spacing: 2px; font-weight: 800; }
 
-        .main-heading-container { text-align: center; margin-top: 30px; }
-        .main-heading-container h2 {
-            color: var(--primary);
-            font-size: 26px;
-            margin: 0;
-            text-transform: uppercase;
+        .logo-box {
+            background: var(--realme-yellow);
+            color: black;
             font-weight: 900;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+        header h1 { color: white; margin: 0; font-size: 20px; letter-spacing: 2px; font-weight: 700; }
+
+        .dashboard { max-width: 550px; margin: 30px auto; padding: 0 15px; }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            border-top: 5px solid var(--realme-yellow);
         }
 
-        .container { 
-            max-width: 550px; 
-            margin: 20px auto 40px; 
-            background: var(--white); 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        .card-title {
+            font-weight: 900;
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: var(--realme-black);
+            text-align: center;
+            text-transform: uppercase;
         }
 
         .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #374151; }
+        label { display: block; font-size: 11px; font-weight: 700; color: #888; margin-bottom: 6px; text-transform: uppercase; }
         
         input { 
-            width: 100%; padding: 12px 15px; 
-            border-radius: 10px; border: 1px solid #d1d5db; 
+            width: 100%; padding: 13px; 
+            border-radius: 10px; border: 2px solid #eee; 
             box-sizing: border-box; font-size: 15px;
+            transition: 0.3s;
         }
 
-        input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
+        input:focus { outline: none; border-color: var(--realme-yellow); background: #fff; }
 
-        button { 
-            width: 100%; padding: 14px; border-radius: 10px; 
-            border: none; font-weight: 700; cursor: pointer; 
+        .btn { 
+            width: 100%; padding: 16px; border-radius: 12px; 
+            border: none; font-weight: 800; cursor: pointer; 
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: 0.3s; font-size: 16px;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
         }
 
-        .save-btn { background: var(--primary); color: white; margin-top: 10px; }
-        .save-btn:hover { background: #1e40af; transform: translateY(-1px); }
+        .save-btn { background: var(--realme-black); color: var(--realme-yellow); margin-top: 10px; }
+        .save-btn:hover { background: var(--realme-gray); transform: scale(1.01); }
 
-        .history-btn { background: #f8fafc; color: var(--primary); margin-top: 15px; border: 1px solid #e2e8f0; }
-        .history-btn:hover { background: #f1f5f9; }
+        .history-btn { background: transparent; color: #555; margin-top: 15px; border: 2px solid #eee; }
 
-        /* History Modal */
+        /* History Section */
         #historySection { 
             display: none; position: fixed; top: 0; left: 0; 
             width: 100%; height: 100%; background: var(--bg); 
-            z-index: 1000; overflow-y: auto; padding: 15px; box-sizing: border-box;
+            z-index: 200; overflow-y: auto; padding: 20px; box-sizing: border-box;
         }
 
-        .history-card {
-            background: white; max-width: 1000px; margin: auto;
-            border-radius: 20px; padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        .search-panel {
+            background: var(--realme-black);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
         }
 
-        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .search-bar input { flex: 1; min-width: 150px; }
+        .search-panel input { border: none; background: #222; color: white; flex: 1; }
 
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th { background: #f1f5f9; color: var(--primary); padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        td { padding: 12px 15px; border-bottom: 1px solid #f3f4f6; font-size: 14px; vertical-align: middle; }
-        tr:hover { background-color: #fcfcfc; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { padding: 10px; color: #888; font-size: 10px; text-transform: uppercase; text-align: left; }
+        tr.data-row { background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        td { padding: 12px; font-size: 13px; }
+        td:first-child { border-radius: 10px 0 0 10px; font-weight: 700; color: var(--realme-black); }
+        td:last-child { border-radius: 0 10px 10px 0; }
 
-        .img-thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; }
-        .del-btn { color: var(--danger); background: none; border: none; font-size: 18px; cursor: pointer; width: auto; padding: 5px; }
-        .del-btn:hover { color: #b91c1c; transform: scale(1.1); }
+        .img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--realme-yellow); }
+        .del-icon { color: #ff4d4f; cursor: pointer; font-size: 16px; }
 
-        footer { text-align: center; padding: 20px; color: #9ca3af; font-size: 12px; }
-        #status { text-align: center; font-weight: bold; margin-top: 15px; font-size: 14px; }
+        footer { text-align: center; padding: 30px; color: #ccc; font-size: 10px; letter-spacing: 1px; }
+        #status { text-align: center; font-weight: bold; font-size: 13px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>AJ STUDIO</h1>
+    <div class="logo-box">r</div>
+    <h1>REALME</h1>
 </header>
 
-<div class="main-heading-container">
-    <h2>By Hand Orders Records</h2>
-</div>
-
-<div class="container" id="mainPage">
-    <div class="form-group">
-        <label><i class="fas fa-barcode"></i> Order Code</label>
-        <input type="text" id="orderCode" placeholder="Enter code">
-    </div>
-
-    <div class="form-group">
-        <label><i class="fas fa-user-tag"></i> Customer Name</label>
-        <input type="text" id="custName" placeholder="Enter customer name">
-    </div>
-
-    <div style="display: flex; gap: 15px;">
-        <div class="form-group" style="flex: 1.5;">
-            <label><i class="fas fa-calendar-day"></i> Order Date</label>
-            <input type="date" id="orderDate">
+<div class="dashboard">
+    <div class="card">
+        <div class="card-title">By Hand Order Records</div>
+        
+        <div class="form-group">
+            <label>Order Number</label>
+            <input type="text" id="orderNo" placeholder="Enter Order Number">
         </div>
-        <div class="form-group" style="flex: 1;">
-            <label><i class="fas fa-layer-group"></i> Pieces</label>
-            <input type="number" id="pieceCount" placeholder="0">
-        </div>
-    </div>
 
-    <div class="form-group">
-        <label><i class="fas fa-camera"></i> Order Evidence (Image)</label>
-        <input type="file" id="orderImg" accept="image/*">
+        <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" id="custName" placeholder="Enter Full Name">
+        </div>
+
+        <div class="form-group">
+            <label>ID Card Number (CNIC)</label>
+            <input type="text" id="idCard" placeholder="Enter ID Card Number">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex: 1;">
+                <label>Date</label>
+                <input type="date" id="orderDate">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Pieces</label>
+                <input type="number" id="pieceCount" value="1">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Attachment (Photo)</label>
+            <input type="file" id="orderImg" accept="image/*">
+        </div>
+
+        <button id="saveBtn" class="btn save-btn">
+            <i class="fas fa-save"></i> Save Record
+        </button>
+        
+        <button id="viewHistoryBtn" class="btn history-btn">
+            <i class="fas fa-search"></i> Find Records
+        </button>
+
+        <p id="status"></p>
     </div>
-    
-    <button id="saveBtn" class="save-btn">
-        <i class="fas fa-save"></i> SAVE RECORD
-    </button>
-    <button id="viewHistoryBtn" class="history-btn">
-        <i class="fas fa-database"></i> VIEW RECORDS HISTORY
-    </button>
-    
-    <p id="status"></p>
 </div>
 
 <div id="historySection">
-    <div class="history-card">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h3 style="color: var(--primary); margin:0; font-size: 22px;">AJ Studio Records Log</h3>
-            <button onclick="closeHistory()" style="width:auto; padding:10px 18px; background:var(--danger); color:white; border-radius: 8px;">
-                <i class="fas fa-times"></i> CLOSE
-            </button>
+    <div style="max-width: 950px; margin: auto;">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin:0;">ORDER <span style="color: var(--realme-yellow);">LOGS</span></h2>
+            <button onclick="closeHistory()" style="background:red; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">CLOSE</button>
         </div>
 
-        <div class="search-bar">
-            <input type="text" id="searchCode" placeholder="Search by Code..." onkeyup="filterTable()">
-            <input type="date" id="searchDate" onchange="filterTable()">
-            <button id="downloadPdf" style="width:auto; background:#f59e0b; color:white; padding: 10px 20px;">
-                <i class="fas fa-file-pdf"></i> PDF
+        <div class="search-panel">
+            <input type="text" id="searchField" placeholder="Find by Order No, Name or ID Card..." onkeyup="filterTable()">
+            <button id="downloadPdf" style="background:white; border:none; padding:0 15px; border-radius:8px; cursor:pointer;">
+                <i class="fas fa-file-pdf"></i>
             </button>
         </div>
 
@@ -167,12 +189,13 @@
             <table id="recordsTable">
                 <thead>
                     <tr>
-                        <th>Code</th>
-                        <th>Customer</th>
+                        <th>Order #</th>
+                        <th>Name</th>
+                        <th>ID Card</th>
                         <th>Date</th>
-                        <th>Pieces</th>
-                        <th>Evidence</th>
-                        <th>Action</th>
+                        <th>Pcs</th>
+                        <th>Img</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -182,14 +205,13 @@
 </div>
 
 <footer>
-    Designed & Developed by AJ Studio Developers &copy; 2026
+    OFFICIAL REALME PARTNER SYSTEM | AJ STUDIO &copy; 2026
 </footer>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAfZYBa2ZBKK9U8D0JRhlU4dGWvJrUs2PQ",
       authDomain: "by-hand-orders-record.firebaseapp.com",
@@ -202,132 +224,70 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Default Date
     document.getElementById('orderDate').value = new Date().toISOString().split('T')[0];
-
-    // Navigation
     document.getElementById('viewHistoryBtn').onclick = () => document.getElementById('historySection').style.display = 'block';
     window.closeHistory = () => document.getElementById('historySection').style.display = 'none';
 
-    // Save Logic
-    const saveBtn = document.getElementById('saveBtn');
-    saveBtn.addEventListener('click', async () => {
-        const code = document.getElementById('orderCode').value;
+    // Save
+    document.getElementById('saveBtn').onclick = async () => {
+        const orderNo = document.getElementById('orderNo').value;
         const name = document.getElementById('custName').value;
+        const idCard = document.getElementById('idCard').value;
         const date = document.getElementById('orderDate').value;
         const pieces = document.getElementById('pieceCount').value;
-        const imageFile = document.getElementById('orderImg').files[0];
+        const file = document.getElementById('orderImg').files[0];
 
-        if(!code || !name || !date || !pieces || !imageFile) { alert("Sari fields bharna zaroori hain!"); return; }
+        if(!orderNo || !name || !file) { alert("Sari fields bharna zaroori hain!"); return; }
 
-        saveBtn.disabled = true;
-        document.getElementById('status').innerText = "Uploading to AJ Studio Cloud... ⏳";
-        document.getElementById('status').style.color = "#2563eb";
-
+        document.getElementById('status').innerText = "Uploading... 📤";
         try {
-            // Upload to ImgBB
-            const formData = new FormData();
-            formData.append("image", imageFile);
-            const imgRes = await fetch("https://api.imgbb.com/1/upload?key=30a17df9f6d3fbbc3e994f6f5a72ee77", {
-                method: "POST",
-                body: formData
-            });
-            const imgData = await imgRes.json();
-            const url = imgData.data.url;
-
-            // Save to Firestore
-            await addDoc(collection(db, "ByHandOrders"), {
-                orderCode: code,
-                customerName: name,
-                orderDate: date,
-                pieceCount: Number(pieces),
-                imageUrl: url,
-                timestamp: serverTimestamp()
-            });
-
-            document.getElementById('status').innerText = "Record Saved Successfully! ✅";
-            document.getElementById('status').style.color = "#10b981";
+            const fd = new FormData(); fd.append("image", file);
+            const res = await fetch("https://api.imgbb.com/1/upload?key=30a17df9f6d3fbbc3e994f6f5a72ee77", { method: "POST", body: fd });
+            const imgData = await res.json();
             
-            // Reset fields
-            document.getElementById('orderCode').value = '';
-            document.getElementById('custName').value = '';
-            document.getElementById('pieceCount').value = '';
-            document.getElementById('orderImg').value = '';
-        } catch (e) { 
-            alert("Internet check karein ya dobara koshish karein."); 
-            document.getElementById('status').innerText = "Failed to save ❌";
-        } finally { saveBtn.disabled = false; }
-    });
+            await addDoc(collection(db, "ByHandOrders"), {
+                orderNo, customerName: name, idCard: idCard, orderDate: date, pieceCount: Number(pieces), imageUrl: imgData.data.url, timestamp: serverTimestamp()
+            });
+            document.getElementById('status').innerText = "Record Saved Successfully! ✅";
+            document.getElementById('orderNo').value = ""; document.getElementById('custName').value = ""; document.getElementById('idCard').value = "";
+        } catch(e) { document.getElementById('status').innerText = "Error! ❌"; }
+    };
 
-    // Delete Logic
-    window.deleteOrder = async (recordId) => {
-        if(confirm("Kya aap waqai is record ko delete karna chahte hain?")) {
-            try {
-                await deleteDoc(doc(db, "ByHandOrders", recordId));
-                alert("Record deleted!");
-            } catch (e) {
-                alert("Delete karne mein masla aya.");
-            }
-        }
-    }
-
-    // Real-time Listeners
-    const tableBody = document.getElementById('tableBody');
-    onSnapshot(query(collection(db, "ByHandOrders"), orderBy("timestamp", "desc")), (snapshot) => {
-        tableBody.innerHTML = "";
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const id = docSnap.id;
-            tableBody.innerHTML += `
-                <tr>
-                    <td><b>${data.orderCode}</b></td>
-                    <td>${data.customerName}</td>
-                    <td>${data.orderDate}</td>
-                    <td>${data.pieceCount}</td>
-                    <td><a href="${data.imageUrl}" target="_blank"><img class="img-thumb" src="${data.imageUrl}"></a></td>
-                    <td>
-                        <button class="del-btn" onclick="deleteOrder('${id}')">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+    // Table Data
+    onSnapshot(query(collection(db, "ByHandOrders"), orderBy("timestamp", "desc")), (snap) => {
+        const tb = document.getElementById('tableBody'); tb.innerHTML = "";
+        snap.forEach((d) => {
+            const item = d.data();
+            tb.innerHTML += `<tr class="data-row">
+                <td>${item.orderNo}</td>
+                <td>${item.customerName}</td>
+                <td>${item.idCard || '-'}</td>
+                <td>${item.orderDate}</td>
+                <td>${item.pieceCount}</td>
+                <td><a href="${item.imageUrl}" target="_blank"><img class="img-preview" src="${item.imageUrl}"></a></td>
+                <td><i class="fas fa-trash-alt del-icon" onclick="window.delRec('${d.id}')"></i></td>
+            </tr>`;
         });
     });
 
-    // Search Logic
-    window.filterTable = () => {
-        const codeVal = document.getElementById('searchCode').value.toUpperCase();
-        const dateVal = document.getElementById('searchDate').value;
-        const rows = tableBody.getElementsByTagName('tr');
+    window.delRec = async (id) => { if(confirm("Kya delete karna chahte hain?")) await deleteDoc(doc(db, "ByHandOrders", id)); };
 
+    window.filterTable = () => {
+        const filter = document.getElementById('searchField').value.toUpperCase();
+        const rows = document.getElementById('tableBody').getElementsByTagName('tr');
         for (let i = 0; i < rows.length; i++) {
-            const codeTxt = rows[i].cells[0].innerText.toUpperCase();
-            const dateTxt = rows[i].cells[2].innerText;
-            rows[i].style.display = (codeTxt.includes(codeVal) && (dateVal === "" || dateTxt === dateVal)) ? "" : "none";
+            const content = rows[i].innerText.toUpperCase();
+            rows[i].style.display = content.indexOf(filter) > -1 ? "" : "none";
         }
     };
 
-    // PDF Generator
-    document.getElementById('downloadPdf').addEventListener('click', () => {
+    document.getElementById('downloadPdf').onclick = () => {
         const { jsPDF } = window.jspdf;
         const docObj = new jsPDF();
-        docObj.setFontSize(20);
-        docObj.setTextColor(30, 58, 138);
-        docObj.text("AJ STUDIO - BY HAND ORDERS REPORT", 14, 20);
-        docObj.setFontSize(10);
-        docObj.setTextColor(100);
-        docObj.text("Report Date: " + new Date().toLocaleString(), 14, 28);
-        
-        docObj.autoTable({ 
-            html: '#recordsTable', 
-            startY: 35,
-            headStyles: { fillColor: [30, 58, 138] },
-            columns: [ {header:'Code'}, {header:'Customer'}, {header:'Date'}, {header:'Pieces'} ]
-        });
-        docObj.save("AJ_Studio_Orders.pdf");
-    });
+        docObj.text("REALME OFFICIAL ORDER LOG", 14, 20);
+        docObj.autoTable({ html: '#recordsTable', startY: 30, columns: [0,1,2,3,4] });
+        docObj.save("Realme_Log.pdf");
+    };
 </script>
-
 </body>
 </html>
