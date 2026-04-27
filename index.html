@@ -33,6 +33,7 @@
         .data-card { background: #fff; padding: 15px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid var(--realme-yellow); position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .data-img { width: 70px; height: 70px; border-radius: 12px; position: absolute; right: 15px; top: 15px; object-fit: cover; }
         .del-icon { color: var(--error); position: absolute; right: 15px; bottom: 15px; font-size: 18px; cursor: pointer; }
+        .creator-tag { display: inline-block; background: #f0f0f0; color: #777; font-size: 9px; padding: 4px 10px; border-radius: 5px; margin-top: 8px; font-weight: 900; text-transform: uppercase; }
 
         /* --- OVERLAYS --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(5px); }
@@ -235,6 +236,7 @@
                     <p>CNIC: ${r.idCard}</p>
                     <p>Phone: ${r.phone}</p>
                     <p>Date: ${r.orderDate} | Qty: ${r.pieceCount}</p>
+                    <div class="creator-tag">By: ${r.creator || "System"}</div>
                     <a href="${r.imageUrl}" target="_blank"><img src="${r.imageUrl}" class="data-img"></a>
                     <i class="fas fa-trash-alt del-icon" onclick="window.askDel('${d.id}')"></i>
                 </div>`;
