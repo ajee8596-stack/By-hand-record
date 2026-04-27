@@ -2,81 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REALME | Enterprise System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REALME | BH-Orders</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffc800">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
         :root { --realme-yellow: #ffc800; --realme-black: #111111; --bg-light: #f8f9fa; --error: #ff4d4f; }
-        * { box-sizing: border-box; transition: all 0.3s ease; font-family: 'Montserrat', sans-serif; }
+        * { box-sizing: border-box; transition: all 0.3s ease; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; background: var(--bg-light); color: #333; overflow-x: hidden; }
 
-        /* --- AUTH & MODALS --- */
+        /* --- AUTH SCREEN --- */
         #authGate { position: fixed; inset: 0; background: #000; display: flex; align-items: center; justify-content: center; z-index: 10000; }
         .auth-card { background: var(--realme-black); padding: 35px 25px; border-radius: 40px; border: 2px solid var(--realme-yellow); text-align: center; width: 92%; max-width: 400px; }
         .logo-box { background: var(--realme-yellow); color: black; display: inline-block; padding: 10px 25px; border-radius: 12px; font-weight: 900; font-size: 24px; margin-bottom: 20px; }
-        .input-auth { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid #333; background: #1a1a1a; color: #fff; margin-bottom: 12px; outline: none; text-align: center; }
-        .btn-auth { width: 100%; padding: 16px; border-radius: 15px; border: none; background: var(--realme-yellow); color: #000; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-        .link-text { color: var(--realme-yellow); font-size: 12px; cursor: pointer; display: block; margin-top: 15px; font-weight: 700; }
+        
+        .input-group { position: relative; width: 100%; margin-bottom: 12px; }
+        .input-auth { width: 100%; padding: 16px; border-radius: 15px; border: 1px solid #333; background: #1a1a1a; color: #fff; outline: none; text-align: center; font-size: 14px; }
+        .eye-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--realme-yellow); cursor: pointer; font-size: 18px; z-index: 5; }
 
-        /* --- APP INTERFACE --- */
-        header { background: #000; padding: 15px; text-align: center; border-bottom: 3px solid var(--realme-yellow); position: sticky; top: 0; z-index: 1000; }
-        .container { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .form-card { background: #fff; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .btn-auth { width: 100%; padding: 16px; border-radius: 15px; border: none; background: var(--realme-yellow); color: #000; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+
+        /* --- INTERFACE --- */
+        header { background: #000; padding: 15px; border-bottom: 3px solid var(--realme-yellow); position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; }
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+        .form-card { background: #fff; padding: 20px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .label { display: block; font-size: 10px; font-weight: 900; color: #aaa; text-transform: uppercase; margin: 0 0 5px 5px; }
-        .input-field { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #f0f0f0; background: #fafafa; margin-bottom: 15px; outline: none; font-weight: 600; }
+        .input-field { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #f0f0f0; background: #fafafa; margin-bottom: 15px; outline: none; font-weight: 600; font-size: 14px; }
         .btn-primary { width: 100%; padding: 16px; border-radius: 15px; border: none; background: #000; color: var(--realme-yellow); font-weight: 900; cursor: pointer; text-transform: uppercase; }
         .btn-secondary { width: 100%; padding: 16px; border-radius: 15px; border: none; background: #eee; color: #555; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-        /* --- DB VIEW --- */
-        #dbView { display: none; position: fixed; inset: 0; background: var(--bg-light); z-index: 5000; padding: 20px; overflow-y: auto; }
-        .data-card { background: #fff; padding: 15px; border-radius: 20px; margin-bottom: 15px; border-left: 6px solid var(--realme-yellow); position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .data-img { width: 70px; height: 70px; border-radius: 12px; position: absolute; right: 15px; top: 15px; object-fit: cover; }
-        .del-icon { color: var(--error); position: absolute; right: 15px; bottom: 15px; font-size: 18px; cursor: pointer; }
-        .creator-tag { display: inline-block; background: #f0f0f0; color: #777; font-size: 9px; padding: 4px 10px; border-radius: 5px; margin-top: 8px; font-weight: 900; text-transform: uppercase; }
+        /* --- DATA CARDS (MOBILE OPTIMIZED) --- */
+        #dbView { display: none; position: fixed; inset: 0; background: var(--bg-light); z-index: 5000; padding: 15px; overflow-y: auto; }
+        .data-card { background: #fff; padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 6px solid var(--realme-yellow); position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03); min-height: 155px; }
+        .data-img { width: 80px; height: 80px; border-radius: 12px; position: absolute; right: 15px; top: 15px; object-fit: cover; border: 1px solid #eee; }
+        .del-icon { color: var(--error); position: absolute; right: 15px; bottom: 15px; font-size: 22px; padding: 5px; cursor: pointer; }
+        .creator-tag { display: inline-block; background: #f0f0f0; color: #777; font-size: 8px; padding: 4px 8px; border-radius: 5px; margin-top: 10px; font-weight: 900; text-transform: uppercase; }
 
-        /* --- OVERLAYS --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(5px); }
-        .modal-box { background: #fff; padding: 30px; border-radius: 25px; text-align: center; width: 90%; max-width: 350px; }
-        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 14px 30px; border-radius: 50px; border: 1px solid var(--realme-yellow); z-index: 12000; font-weight: 700; font-size: 13px; }
+        #toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: #000; color: #fff; padding: 12px 25px; border-radius: 50px; border: 1px solid var(--realme-yellow); z-index: 12000; font-weight: 700; font-size: 12px; width: max-content; text-align: center; transition: 0.5s; }
         #toast.active { bottom: 30px; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(5px); }
+        .modal-box { background: #fff; padding: 25px; border-radius: 25px; text-align: center; width: 85%; max-width: 320px; }
     </style>
 </head>
 <body>
 
-<div id="toast">Task Completed</div>
+<div id="toast">Connecting...</div>
 
 <div id="authGate">
-    <div class="auth-card" id="authBox">
+    <div class="auth-card">
         <div class="logo-box">realme</div>
-        <h2 id="aTitle" style="color:#fff; margin:0 0 20px 0;">Sign In</h2>
-        <div id="authInputs">
-            <input type="text" id="aUser" class="input-auth" placeholder="Full Name">
+        <h2 id="aTitle" style="color:#fff; margin:0 0 20px 0; font-size: 20px;">Sign In</h2>
+        
+        <div class="input-group">
+            <input type="text" id="aUser" class="input-auth" placeholder="Username">
+        </div>
+
+        <div class="input-group">
             <input type="password" id="aPass" class="input-auth" placeholder="Password">
-            <div id="regExtra" style="display:none;">
-                <input type="password" id="aConf" class="input-auth" placeholder="Confirm Password">
-                <input type="tel" id="aPhone" class="input-auth" placeholder="Recovery Phone (03xxxxxxxxx)">
-            </div>
-            <div id="resetExtra" style="display:none;">
-                <input type="tel" id="rPhone" class="input-auth" placeholder="Enter Recovery Phone">
-                <input type="password" id="nPass" class="input-auth" placeholder="Set New Password">
+            <i class="fas fa-eye eye-icon" id="togglePass" onclick="togglePasswordVisibility()"></i>
+        </div>
+
+        <div id="regExtra" style="display:none;">
+            <div class="input-group">
+                <input type="tel" id="aPhone" class="input-auth" placeholder="Mobile Number">
             </div>
         </div>
-        <button onclick="handleAuth()" class="btn-auth" id="aBtn">Access System</button>
-        <span class="link-text" id="toggleLink" onclick="toggleAuthMode()">No Account? Register Here</span>
-        <span class="link-text" id="forgotLink" onclick="showResetMode()" style="color:#888;">Forgot Password?</span>
+
+        <button onclick="handleAuth()" class="btn-auth">Enter System</button>
+        <span id="toggleLink" onclick="toggleAuthMode()" style="color:var(--realme-yellow); font-size:11px; display:block; margin-top:15px; cursor:pointer; font-weight:700;">No Account? Register Here</span>
     </div>
 </div>
 
 <div id="mainApp" style="display:none;">
-    <header><div class="logo-box" style="margin:0; font-size:20px;">realme</div></header>
+    <header>
+        <div class="logo-box" style="margin:0; font-size:16px; padding: 8px 15px;">realme</div>
+        <div style="text-align:right;">
+            <div style="color:white; font-size:9px; font-weight:900;">OPERATOR:</div>
+            <span id="opName" style="color:var(--realme-yellow); font-size:12px; font-weight:900;">---</span>
+            <span onclick="logout()" style="color:white; font-size:8px; display:block; text-decoration:underline; cursor:pointer;">LOGOUT</span>
+        </div>
+    </header>
+
     <div class="container">
         <div class="form-card">
             <span class="label">Order Code</span>
             <input type="text" id="fCode" class="input-field" placeholder="Ex: LHH3311">
             <span class="label">Customer Name</span>
-            <input type="text" id="fName" class="input-field" placeholder="Full Name">
-            <span class="label">CNIC Number</span>
+            <input type="text" id="fName" class="input-field">
+            <span class="label">CNIC (Auto-Dash)</span>
             <input type="text" id="fID" class="input-field" placeholder="XXXXX-XXXXXXX-X" maxlength="15">
             <span class="label">Mobile Number</span>
             <input type="tel" id="fMob" class="input-field" placeholder="03xx-xxxxxxx" maxlength="12">
@@ -84,20 +100,20 @@
                 <div style="flex:2"><span class="label">Date</span><input type="date" id="fDate" class="input-field"></div>
                 <div style="flex:1"><span class="label">Qty</span><input type="number" id="fQty" class="input-field" value="1"></div>
             </div>
-            <span class="label">Proof Image</span>
+            <span class="label">Attach Proof</span>
             <input type="file" id="fFile" class="input-field" accept="image/*" style="padding:10px; font-size:11px;">
-            <button id="saveBtn" class="btn-primary">Secure Record</button>
-            <button onclick="document.getElementById('dbView').style.display='block'" class="btn-secondary">View Database</button>
+            <button id="saveBtn" class="btn-primary">Secure Entry</button>
+            <button onclick="document.getElementById('dbView').style.display='block'" class="btn-secondary">Check Records</button>
         </div>
     </div>
 
     <div id="dbView">
-        <div style="position:sticky; top:0; background:var(--bg-light); padding-bottom:15px; z-index:10;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0; font-weight:900;">RECORDS</h3>
-                <button onclick="document.getElementById('dbView').style.display='none'" style="background:#000; color:#fff; border:none; padding:8px 20px; border-radius:10px; font-weight:900;">CLOSE</button>
+        <div style="position:sticky; top:0; background:var(--bg-light); padding-bottom:10px; z-index:10;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h3 style="margin:0; font-weight:900; font-size:18px;">HISTORY</h3>
+                <button onclick="document.getElementById('dbView').style.display='none'" style="background:#000; color:#fff; border:none; padding:8px 15px; border-radius:10px; font-weight:900; font-size:11px;">CLOSE</button>
             </div>
-            <input type="text" id="q" style="width:100%; padding:15px; border-radius:15px; border:2px solid var(--realme-yellow); outline:none;" placeholder="Search..." onkeyup="doSearch()">
+            <input type="text" id="q" style="width:100%; padding:12px; border-radius:12px; border:2px solid var(--realme-yellow); outline:none;" placeholder="Search Code or Name..." onkeyup="doSearch()">
         </div>
         <div id="dataList"></div>
     </div>
@@ -105,19 +121,19 @@
 
 <div id="delModal" class="modal-overlay">
     <div class="modal-box">
-        <h3 style="margin:0 0 10px 0;">Security Check</h3>
-        <p style="color:#888; font-size:12px; margin-bottom:20px;">Enter 'Realme' to delete record.</p>
-        <input type="text" id="mKey" class="input-field" style="text-align:center;" placeholder="Security Key">
+        <h3 style="margin:0 0 10px 0; font-size:18px;">Verify Deletion</h3>
+        <p style="color:#888; font-size:11px; margin-bottom:15px;">Type 'Realme' to confirm.</p>
+        <input type="text" id="mKey" class="input-field" style="text-align:center;" placeholder="Key">
         <div style="display:flex; gap:10px;">
-            <button onclick="document.getElementById('delModal').style.display='none'" class="btn-secondary" style="flex:1; margin:0;">Back</button>
-            <button id="confirmDelBtn" class="btn-primary" style="flex:1; background:var(--error); color:white;">Delete</button>
+            <button onclick="document.getElementById('delModal').style.display='none'" class="btn-secondary" style="flex:1; margin:0;">Cancel</button>
+            <button id="confDel" class="btn-primary" style="flex:1; background:var(--error); color:white;">Delete</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc, getDocs, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAfZYBa2ZBKK9U8D0JRhlU4dGWvJrUs2PQ",
@@ -130,77 +146,78 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const msg = (t) => { const tst = document.getElementById('toast'); tst.innerText = t; tst.classList.add('active'); setTimeout(()=>tst.classList.remove('active'), 3000); };
 
-    // --- SESSION & AUTH LOGIC ---
-    let mode = "login";
-    const session = sessionStorage.getItem("active");
-    if(session) { document.getElementById('authGate').style.display = "none"; document.getElementById('mainApp').style.display = "block"; }
+    // --- AUTO LOGIN SESSION ---
+    const activeUser = localStorage.getItem("rm_session_bh");
+    if(activeUser) {
+        document.getElementById('authGate').style.display = "none";
+        document.getElementById('mainApp').style.display = "block";
+        document.getElementById('opName').innerText = activeUser;
+    }
 
-    window.toggleAuthMode = () => {
-        mode = mode === "login" ? "reg" : "login";
-        document.getElementById('aTitle').innerText = mode === "reg" ? "Register" : "Sign In";
-        document.getElementById('regExtra').style.display = mode === "reg" ? "block" : "none";
-        document.getElementById('resetExtra').style.display = "none";
-        document.getElementById('toggleLink').innerText = mode === "reg" ? "Already have account? Login" : "No Account? Register Here";
-    };
-
-    window.showResetMode = () => {
-        mode = "reset";
-        document.getElementById('aTitle').innerText = "Reset Password";
-        document.getElementById('resetExtra').style.display = "block";
-        document.getElementById('regExtra').style.display = "none";
-        document.getElementById('aUser').style.display = "none";
-        document.getElementById('aPass').style.display = "none";
-        document.getElementById('forgotLink').style.display = "none";
-        document.getElementById('toggleLink').innerText = "Back to Login";
-    };
-
-    window.handleAuth = () => {
-        const u = document.getElementById('aUser').value.trim();
-        const p = document.getElementById('aPass').value;
-        const ph = document.getElementById('aPhone').value;
-        const rPh = document.getElementById('rPhone').value;
-        const nP = document.getElementById('nPass').value;
-
-        if(mode === "reg") {
-            if(!u || !p || !ph) return msg("Fill all fields");
-            localStorage.setItem("rm_u", u); localStorage.setItem("rm_p", p); localStorage.setItem("rm_ph", ph);
-            msg("Registered! Please Login"); toggleAuthMode();
-        } else if(mode === "login") {
-            if(u === localStorage.getItem("rm_u") && p === localStorage.getItem("rm_p")) {
-                sessionStorage.setItem("active", "true"); location.reload();
-            } else { msg("Invalid Credentials"); }
-        } else if(mode === "reset") {
-            if(rPh === localStorage.getItem("rm_ph")) {
-                localStorage.setItem("rm_p", nP); msg("Password Updated!"); location.reload();
-            } else { msg("Recovery Phone Mismatch"); }
+    // --- PASSWORD EYE TOGGLE ---
+    window.togglePasswordVisibility = () => {
+        const passInput = document.getElementById('aPass');
+        const eyeIcon = document.getElementById('togglePass');
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            passInput.type = "password";
+            eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
         }
     };
 
-    // --- UTILS ---
-    const msg = (t) => { const tst = document.getElementById('toast'); tst.innerText = t; tst.classList.add('active'); setTimeout(()=>tst.classList.remove('active'), 3000); };
-    
+    let mode = "login";
+    window.toggleAuthMode = () => {
+        mode = mode === "login" ? "reg" : "login";
+        document.getElementById('aTitle').innerText = mode === "reg" ? "Create Account" : "Sign In";
+        document.getElementById('regExtra').style.display = mode === "reg" ? "block" : "none";
+        document.getElementById('toggleLink').innerText = mode === "reg" ? "Already have account? Login" : "No Account? Register Here";
+    };
+
+    window.handleAuth = async () => {
+        const u = document.getElementById('aUser').value.trim();
+        const p = document.getElementById('aPass').value;
+        const ph = document.getElementById('aPhone').value.trim();
+
+        if(mode === "reg") {
+            if(!u || !p || !ph) return msg("Missing Information");
+            const q = query(collection(db, "SystemUsers"), where("phone", "==", ph));
+            const snap = await getDocs(q);
+            if(!snap.empty) return msg("Phone Number Exists!");
+            await addDoc(collection(db, "SystemUsers"), { name: u, pass: p, phone: ph });
+            msg("Registered! Login Now."); toggleAuthMode();
+        } else {
+            msg("Verifying...");
+            const q = query(collection(db, "SystemUsers"), where("name", "==", u), where("pass", "==", p));
+            const snap = await getDocs(q);
+            if(!snap.empty) {
+                localStorage.setItem("rm_session_bh", u);
+                location.reload();
+            } else { msg("Invalid Credentials"); }
+        }
+    };
+
+    window.logout = () => { localStorage.removeItem("rm_session_bh"); location.reload(); };
+
+    // --- DATA HANDLING ---
     document.getElementById('fID').oninput = (e) => {
         let v = e.target.value.replace(/\D/g,''); let out = "";
         if(v.length>0) out+=v.substring(0,5); if(v.length>5) out+='-'+v.substring(5,12); if(v.length>12) out+='-'+v.substring(12,13);
         e.target.value = out;
     };
-    document.getElementById('fMob').oninput = (e) => {
-        let v = e.target.value.replace(/\D/g,''); let out = "";
-        if(v.length>0) out+=v.substring(0,4); if(v.length>4) out+='-'+v.substring(4,11);
-        e.target.value = out;
-    };
     document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
 
-    // --- MAIN OPERATIONS ---
     document.getElementById('saveBtn').onclick = async () => {
-        const code = document.getElementById('fCode').value;
-        const img = document.getElementById('fFile').files[0];
-        if(!code || !img) return msg("Code & Image Required");
+        const code = document.getElementById('fCode').value.trim();
+        const imgFile = document.getElementById('fFile').files[0];
+        if(!code || !imgFile) return msg("Order Code & Proof required!");
 
-        msg("Syncing Data...");
+        msg("Saving to Cloud...");
         try {
-            const fd = new FormData(); fd.append("image", img);
+            const fd = new FormData(); fd.append("image", imgFile);
             const res = await fetch("https://api.imgbb.com/1/upload?key=30a17df9f6d3fbbc3e994f6f5a72ee77", {method:"POST", body:fd});
             const d = await res.json();
 
@@ -208,21 +225,20 @@
                 orderNo: code, customerName: document.getElementById('fName').value,
                 idCard: document.getElementById('fID').value, phone: document.getElementById('fMob').value,
                 orderDate: document.getElementById('fDate').value, pieceCount: Number(document.getElementById('fQty').value),
-                imageUrl: d.data.url, creator: localStorage.getItem("rm_u"), timestamp: serverTimestamp()
+                imageUrl: d.data.url, creator: localStorage.getItem("rm_session_bh"), timestamp: serverTimestamp()
             });
-            msg("Record Secured!");
-            document.querySelectorAll('.input-field').forEach(i => { if(i.id!=='fDate' && i.id!=='fQty') i.value = ""; });
-        } catch(e) { msg("Sync Failed"); }
+            msg("Entry Secured!");
+            setTimeout(() => { location.reload(); }, 1200);
+        } catch(e) { msg("Upload Failed!"); }
     };
 
-    let tid = null;
-    window.askDel = (id) => { tid = id; document.getElementById('delModal').style.display = 'flex'; };
-    document.getElementById('confirmDelBtn').onclick = async () => {
+    let delId = null;
+    window.askDel = (id) => { delId = id; document.getElementById('delModal').style.display = 'flex'; };
+    document.getElementById('confDel').onclick = async () => {
         if(document.getElementById('mKey').value === "Realme") {
-            await deleteDoc(doc(db, "ByHandOrders", tid));
-            document.getElementById('delModal').style.display = 'none';
-            document.getElementById('mKey').value = ""; msg("Deleted");
-        } else { msg("Wrong Key"); }
+            await deleteDoc(doc(db, "ByHandOrders", delId));
+            document.getElementById('delModal').style.display = 'none'; msg("Deleted");
+        } else { msg("Invalid Key"); }
     };
 
     onSnapshot(query(collection(db, "ByHandOrders"), orderBy("timestamp", "desc")), (snap) => {
@@ -231,12 +247,14 @@
             const r = d.data();
             l.innerHTML += `
                 <div class="data-card">
-                    <h4>${r.orderNo}</h4>
-                    <p>Customer: ${r.customerName}</p>
-                    <p>CNIC: ${r.idCard}</p>
-                    <p>Phone: ${r.phone}</p>
-                    <p>Date: ${r.orderDate} | Qty: ${r.pieceCount}</p>
-                    <div class="creator-tag">By: ${r.creator || "System"}</div>
+                    <h4 style="margin:0 0 10px 0; font-size:15px; width:70%;">${r.orderNo}</h4>
+                    <div style="font-size:11px; line-height:1.6; color:#444; padding-right:85px;">
+                        <strong>CUSTOMER:</strong> ${r.customerName || '---'}<br>
+                        <strong>CNIC:</strong> ${r.idCard || '---'}<br>
+                        <strong>MOBILE:</strong> ${r.phone || '---'}<br>
+                        <strong>INFO:</strong> Qty: ${r.pieceCount} | ${r.orderDate}
+                    </div>
+                    <div class="creator-tag">BY: ${r.creator || "System"}</div>
                     <a href="${r.imageUrl}" target="_blank"><img src="${r.imageUrl}" class="data-img"></a>
                     <i class="fas fa-trash-alt del-icon" onclick="window.askDel('${d.id}')"></i>
                 </div>`;
@@ -244,10 +262,8 @@
     });
 
     window.doSearch = () => {
-        let q = document.getElementById('q').value.toLowerCase();
-        document.querySelectorAll('.data-card').forEach(c => {
-            c.style.display = c.innerText.toLowerCase().includes(q) ? "block" : "none";
-        });
+        let val = document.getElementById('q').value.toLowerCase();
+        document.querySelectorAll('.data-card').forEach(c => c.style.display = c.innerText.toLowerCase().includes(val) ? "block" : "none");
     };
 </script>
 </body>
